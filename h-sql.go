@@ -9,6 +9,8 @@ import (
 	"os"
 	"sync"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 // PayloadHeader represents the combination of payload and header
@@ -68,19 +70,31 @@ func checkVulnerability(url string, payloads []string, headers []string, outputF
 
 			defer res.Body.Close()
 
-			result := fmt.Sprintf("Testing for URL: %s\nTesting for Header: %s\nPayload: %s\nResponse Time: %v\n",
-				url, header, payload, elapsed)
+			// Create color instances
+			urlColor := color.New(color.FgCyan)
+			headerColor := color.New(color.FgYellow)
+			payloadColor := color.New(color.FgMagenta)
+			timeColor := color.New(color.FgBlue)
+			statusColor := color.New(color.FgGreen)
 
+			// Apply colors to each part of the result
+			urlColor.Printf("Testing for URL: %s\n", url)
+			headerColor.Printf("Testing for Header: %s\n", header)
+			payloadColor.Printf("Payload: %s\n", payload)
+			timeColor.Printf("Response Time: %.2f seconds\n", elapsed)
+
+			result := ""
 			if elapsed >= 25 && elapsed <= 50 {
-				result += "Status: Vulnerable\n\n"
-				fmt.Print(result)
-
-				if outputFile != nil {
-					outputFile.WriteString(result)
-				}
+				statusColor.Printf("Status: Vulnerable\n\n")
+				result = "Vulnerable"
 			} else {
-				result += "Status: Not Vulnerable\n\n"
-				fmt.Print(result)
+				statusColor.Printf("Status: Not Vulnerable\n\n")
+				result = "Not Vulnerable"
+			}
+
+			if outputFile != nil {
+				outputFile.WriteString(fmt.Sprintf("URL: %s, Header: %s, Payload: %s, Response Time: %.2f seconds, Status: %s\n",
+					url, header, payload, elapsed, result))
 			}
 		}
 	}
