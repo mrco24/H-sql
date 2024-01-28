@@ -13,7 +13,7 @@ import (
 	"github.com/fatih/color"
 )
 
-// PayloadHeader represents the combination of payload and header
+
 type PayloadHeader struct {
 	Payload string
 	Header  string
@@ -42,7 +42,7 @@ func init() {
 	flag.Parse()
 }
 
-// checkVulnerability checks if a URL with a specific header is vulnerable
+
 func checkVulnerability(url string, payloads []string, headers []string, outputFile *os.File, wg *sync.WaitGroup) {
 	defer wg.Done()
 
